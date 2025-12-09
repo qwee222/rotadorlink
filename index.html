@@ -55,19 +55,15 @@ w.backOfferUrl = ''    }
 </body>
 <script>
 
-    // --- Lógica de Rotación de URL Forzada en Carga ---
-
     document.addEventListener('DOMContentLoaded', () => {
 
-        // 1. Función para obtener el número actual (ej. de /?1234 -> 1234)
+        // --- Funciones de Rotación ---
 
         function getCurrentNumber() {
 
-            // Obtener la parte de la URL después del '?'
+            // Obtiene la parte después de '?' y la convierte a número (o 0 si no existe)
 
-            const currentParam = window.location.search.substring(1); 
-
-            // Convertir a entero. Si no es un número válido, empieza en 0.
+            const currentParam = window.location.search.substring(1);
 
             const currentNumber = parseInt(currentParam) || 0;
 
@@ -75,19 +71,15 @@ w.backOfferUrl = ''    }
 
         }
 
-        // 2. Función para generar el siguiente número rotado
-
         function getNextRotatedNumber(currentNum) {
-
-            // Incrementa el número actual.
 
             let nextNum = currentNum + 1;
 
-            // Asegura que el número esté en el rango de 1 a 99999.
+            // Asegura que el número esté entre 1 y 9999
 
-            if (nextNum > 99999 || nextNum === 0) {
+            if (nextNum > 9999 || nextNum === 0) {
 
-                nextNum = 1; // Vuelve a 1 si llega a 99999 o si empezó en 0.
+                nextNum = 1;
 
             }
 
@@ -95,35 +87,29 @@ w.backOfferUrl = ''    }
 
         }
 
-        // 3. Ejecutar la rotación forzada
+        // --- Ejecución ---
 
         const currentNumber = getCurrentNumber();
 
         const nextNumber = getNextRotatedNumber(currentNumber);
 
-        // Crea la nueva URL con el nuevo número
+        // Construye la nueva URL (ej: /index.html?123)
 
         const newUrl = window.location.pathname + '?' + nextNumber;
 
-        // **IMPORTANTE:** Esto es lo que fuerza el cambio.
+        // **CLAVE:** Solo cambia la URL si es diferente.
 
-        // Usamos window.location.replace para cambiar la URL y evitar que
+        // Usa history.replaceState() para modificar la URL mostrada en la barra 
 
-        // el usuario pueda simplemente presionar el botón "Atrás" del navegador
-
-        // y volver a la URL anterior.
+        // de direcciones SIN forzar una recarga total de la página.
 
         if (window.location.search !== '?' + nextNumber) {
 
-            window.location.replace(newUrl);
+            window.history.replaceState(null, null, newUrl);
 
         }
 
-        // NOTA: Si usas window.location.replace, se detiene la ejecución del script
-
-        // y la página se recarga inmediatamente con la nueva URL.
-
     });
 </script>
- 
 </html>
+
